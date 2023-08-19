@@ -1,6 +1,11 @@
 syntax = "proto3";
 package com.echo.proto;
 
+// This option tells the Protocol Buffers compiler to generate each top-level
+// message, enum, and service defined in the .proto file into its own separate
+// file.
+option java_multiple_files = true;
+
 message EchoRequest {
   string message = 1;
 }
