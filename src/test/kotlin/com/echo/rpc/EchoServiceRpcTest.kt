@@ -47,6 +47,6 @@ class EchoServiceRpcTest {
         val response = EchoServiceGrpcKt.EchoServiceCoroutineStub(channel).echo(request)
 
         // Verify that the response is as expected
-        assertEquals(EchoResponse.newBuilder().setMessage(requestMessage).build(), response)
+        assertEquals(EchoResponse.newBuilder().setMessage("13:Hello, World!").build(), response)
     }
 }

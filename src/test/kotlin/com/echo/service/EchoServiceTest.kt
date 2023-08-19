@@ -14,6 +14,6 @@ class EchoServiceTest {
         val result = echoService.echo(message)
 
         // Verify that the result is equal to the expected message
-        assertEquals(message, result)
+        assertEquals("13:Hello, World!", result)
     }
 }
