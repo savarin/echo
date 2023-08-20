@@ -4,6 +4,7 @@ import com.echo.proto.EchoRequest
 import com.echo.proto.EchoResponse
 import com.echo.proto.EchoServiceGrpcKt.EchoServiceCoroutineImplBase
 import com.echo.service.EchoService
+import io.grpc.ServerBuilder
 
 /**
  * RPC service implementation that handles remote procedure calls related to the Echo service. It
@@ -32,4 +33,27 @@ class EchoServiceRpc constructor(
             .setMessage(message)
             .build()
     }
+}
+
+class EchoServer {
+    // Server instance configured to run on port 8080 and to handle RPC requests using the
+    // EchoServiceRpc class, which delegates the requests to the EchoService implementation
+    private val server = ServerBuilder.forPort(8080)
+        .addService(EchoServiceRpc(EchoService()))
+        .build()
+
+    /**
+     * Starts the gRPC server, enabling it to accept incoming connections and RPC requests.
+     * It prints a message to the console indicating that the server is listening on port 8080,
+     * and then it blocks until the server is terminated.
+     */
+    fun start() {
+        server.start()
+        println("Server started, listening on 8080")
+        server.awaitTermination()
+    }
+}
+
+fun main() {
+    EchoServer().start()
 }

@@ -16,6 +16,7 @@ dependencies {
     implementation("io.grpc:grpc-stub:1.57.2")
     implementation("io.grpc:grpc-testing:1.57.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("io.grpc:grpc-netty:1.41.0")
     implementation(kotlin("stdlib-jdk8"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -45,4 +46,18 @@ protobuf {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+val sourceSets = extensions.getByName("sourceSets") as SourceSetContainer
+val mainSourceSet = sourceSets.getByName("main")
+
+val runServer by tasks.registering(JavaExec::class) {
+    mainClass.set("com.echo.rpc.EchoServiceRpcKt")
+    classpath = mainSourceSet.runtimeClasspath
+}
+
+val runClient by tasks.registering(JavaExec::class) {
+    mainClass.set("com.echo.client.EchoClientKt")
+    classpath = mainSourceSet.runtimeClasspath
+    args = listOf(project.properties["args"]?.toString() ?: "")
 }
