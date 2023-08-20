@@ -41,8 +41,12 @@ object EchoLogStore {
     }
 }
 
-fun main() {
-    EchoLogStore.migrate()
-    EchoLogStore.insertLog("id1", "Hello, World!", "2023-08-18 10:30:00")
-    EchoLogStore.printLogs()
+fun main(args: Array<String>) {
+    when {
+        args.contains("--migrate") -> EchoLogStore.migrate()
+        else -> {
+            EchoLogStore.insertLog("id1", "Hello, World!", "2023-08-18 10:30:00")
+            EchoLogStore.printLogs()
+        }
+    }
 }

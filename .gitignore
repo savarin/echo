@@ -28,5 +28,7 @@ replay_pid*
 .idea/
 build/
 gradle/
+src/main/generated/
+echo.db
 gradlew
 gradlew.bat

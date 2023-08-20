@@ -9,6 +9,8 @@ repositories {
     mavenCentral()
 }
 
+val jooqGeneratorRuntime by configurations.creating
+
 dependencies {
     implementation("io.grpc:grpc-core:1.57.2")
     implementation("io.grpc:grpc-kotlin-stub:1.3.0")
@@ -22,6 +24,8 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.42.0.0")
     implementation("org.slf4j:slf4j-simple:2.0.7")
     implementation(kotlin("stdlib-jdk8"))
+    jooqGeneratorRuntime("org.jooq:jooq-codegen:3.18.6")
+    jooqGeneratorRuntime("org.xerial:sqlite-jdbc:3.42.0.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -53,7 +57,24 @@ tasks.test {
 }
 
 val sourceSets = extensions.getByName("sourceSets") as SourceSetContainer
+sourceSets.named("main") {
+    java.srcDir("src/main/generated")
+}
+
 val mainSourceSet = sourceSets.getByName("main")
+
+val migrateDb by tasks.registering(JavaExec::class) {
+    mainClass.set("com.echo.store.EchoLogStoreKt")
+    args("--migrate")
+    classpath = mainSourceSet.runtimeClasspath
+}
+
+val generateJooq by tasks.registering(JavaExec::class) {
+    mainClass.set("org.jooq.codegen.GenerationTool")
+    classpath = configurations.getByName("jooqGeneratorRuntime")
+    args("src/main/resources/jooq-config.xml")
+    dependsOn("migrateDb")
+}
 
 val runServer by tasks.registering(JavaExec::class) {
     mainClass.set("com.echo.rpc.EchoServiceRpcKt")
