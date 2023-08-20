@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test
 class EchoServiceTest {
     @Test
     fun `echo should return the same message`() {
-        // Initialize EchoService
+        // Arrange: Initialize EchoService and define the expected message
         val echoService = EchoService()
-
-        // Define the expected message and invoke the echo method with a different input
         val message = "Hello, World!"
+
+        // Act: Invoke the echo method with the input message
         val result = echoService.echo(message)
 
-        // Verify that the result is equal to the expected message
-        assertEquals("13:Hello, World!", result)
+        // Assert: Verify that the result is equal to the expected message
+        assertEquals("13:$message", result)
     }
 }

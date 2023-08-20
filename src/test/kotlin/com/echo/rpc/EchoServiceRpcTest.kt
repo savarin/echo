@@ -20,33 +20,30 @@ class EchoServiceRpcTest {
 
     @BeforeEach
     fun setup() {
-        // Generate unique name for in-process server
+        // Generate unique name for in-process server and create server and channel
         serverName = InProcessServerBuilder.generateName()
-
-        // Create and start an in-process server with EchoServiceRpc implementation
         server = InProcessServerBuilder.forName(serverName).directExecutor()
             .addService(EchoServiceRpc(EchoService())).build().start()
-
-        // Create in-process channel for communication with the server
         channel = InProcessChannelBuilder.forName(serverName).directExecutor().build() as io.grpc.ManagedChannel
     }
 
     @AfterEach
     fun cleanup() {
+        // Shutdown channel and server after test execution
         channel.shutdown()
         server.shutdownNow()
     }
 
     @Test
     fun `test echo rpc`() = runBlocking {
-        // Define request message
-        val requestMessage = "Hello, World!"
-        val request = EchoRequest.newBuilder().setMessage(requestMessage).build()
+        // Arrange: Define request message
+        val message = "Hello, World!"
+        val request = EchoRequest.newBuilder().setMessage(message).build()
 
-        // Invoke RPC call and get the response
+        // Act: Invoke RPC call and get the response
         val response = EchoServiceGrpcKt.EchoServiceCoroutineStub(channel).echo(request)
 
-        // Verify that the response is as expected
-        assertEquals(EchoResponse.newBuilder().setMessage("13:Hello, World!").build(), response)
+        // Assert: Verify that the response is as expected
+        assertEquals(EchoResponse.newBuilder().setMessage("13:$message").build(), response)
     }
 }
