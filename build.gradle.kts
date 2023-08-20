@@ -16,6 +16,7 @@ dependencies {
     implementation("io.grpc:grpc-protobuf:1.57.2")
     implementation("io.grpc:grpc-stub:1.57.2")
     implementation("io.grpc:grpc-testing:1.57.2")
+    implementation("org.flywaydb:flyway-core:9.21.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jooq:jooq:3.18.6")
     implementation("org.xerial:sqlite-jdbc:3.42.0.0")

@@ -1,9 +1,9 @@
 package com.echo.store
 
+import org.flywaydb.core.Flyway
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.impl.DSL
-import org.jooq.impl.SQLDataType
 import java.sql.DriverManager
 
 object EchoLogStore {
@@ -13,14 +13,13 @@ object EchoLogStore {
         return DSL.using(DriverManager.getConnection(URL), SQLDialect.SQLITE)
     }
 
-    fun createTable() {
-        val ctx = connect()
-        ctx.createTableIfNotExists("echo_log")
-            .column("id", SQLDataType.VARCHAR(255).nullable(false))
-            .column("message", SQLDataType.VARCHAR(255).nullable(false))
-            .column("created_at", SQLDataType.TIMESTAMP.nullable(false))
-            .constraint(DSL.primaryKey("id"))
-            .execute()
+    fun migrate() {
+        val flyway = Flyway.configure()
+            .dataSource(URL, null, null)
+            .locations("classpath:db/migration")
+            .load()
+
+        flyway.migrate()
     }
 
     fun insertLog(id: String, message: String, createdAt: String) {
@@ -43,7 +42,7 @@ object EchoLogStore {
 }
 
 fun main() {
-    EchoLogStore.createTable()
+    EchoLogStore.migrate()
     EchoLogStore.insertLog("id1", "Hello, World!", "2023-08-18 10:30:00")
     EchoLogStore.printLogs()
 }
