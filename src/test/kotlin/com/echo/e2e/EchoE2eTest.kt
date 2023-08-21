@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test
 import java.time.Clock
 
 class EchoServiceTest {
+    // Define server name, service, server builder, channel, and client
     private val serverName = "in-process-test-server"
     private val echoService = EchoService(Clock.systemUTC(), EchoLogStore)
     private val serverBuilder = InProcessServerBuilder.forName(serverName)
@@ -28,14 +29,20 @@ class EchoServiceTest {
 
     @BeforeEach
     fun before() {
+        // Start the server before each test
         serverBuilder.start()
     }
 
     @Test
     fun echo() = runBlocking {
+        // Arrange: Get the size of all logs before the test
         val preSize = EchoLogStore.getAll().size
 
-        assertEquals(echoClient.echo("foo"), "3:foo")
+        // Act: Call the client's echo method
+        val result = echoClient.echo("foo")
+
+        // Assert: Verify the result and the change in log size
+        assertEquals("3:foo", result)
 
         val postSize = EchoLogStore.getAll().size
         assertEquals(preSize + 1, postSize)
