@@ -27,7 +27,6 @@ class EchoServiceRpcTest {
         server = InProcessServerBuilder.forName(serverName).directExecutor()
             .addService(EchoServiceRpc(EchoService(Clock.systemUTC(), EchoLogStore))).build().start()
         channel = InProcessChannelBuilder.forName(serverName).directExecutor().build() as io.grpc.ManagedChannel
-        EchoLogStore.setUp("jdbc:sqlite:echo.db")
     }
 
     @AfterEach
@@ -35,7 +34,6 @@ class EchoServiceRpcTest {
         // Shutdown channel and server after test execution
         channel.shutdown()
         server.shutdownNow()
-        EchoLogStore.tearDown()
     }
 
     @Test
