@@ -4,6 +4,7 @@ import com.echo.proto.EchoRequest
 import com.echo.proto.EchoResponse
 import com.echo.proto.EchoServiceGrpcKt
 import com.echo.service.EchoService
+import com.echo.store.EchoLogStore
 import io.grpc.inprocess.InProcessServerBuilder
 import io.grpc.inprocess.InProcessChannelBuilder
 import kotlinx.coroutines.runBlocking
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.time.Clock
 
 class EchoServiceRpcTest {
 
@@ -23,7 +25,7 @@ class EchoServiceRpcTest {
         // Generate unique name for in-process server and create server and channel
         serverName = InProcessServerBuilder.generateName()
         server = InProcessServerBuilder.forName(serverName).directExecutor()
-            .addService(EchoServiceRpc(EchoService())).build().start()
+            .addService(EchoServiceRpc(EchoService(Clock.systemUTC(), EchoLogStore))).build().start()
         channel = InProcessChannelBuilder.forName(serverName).directExecutor().build() as io.grpc.ManagedChannel
     }
 

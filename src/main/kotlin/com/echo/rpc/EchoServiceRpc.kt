@@ -3,8 +3,10 @@ package com.echo.rpc
 import com.echo.proto.EchoRequest
 import com.echo.proto.EchoResponse
 import com.echo.proto.EchoServiceGrpcKt.EchoServiceCoroutineImplBase
+import com.echo.store.EchoLogStore
 import com.echo.service.EchoService
 import io.grpc.ServerBuilder
+import java.time.Clock
 
 /**
  * RPC service implementation that handles remote procedure calls related to the Echo service. It
@@ -12,7 +14,7 @@ import io.grpc.ServerBuilder
  *
  * @property echoService The underlying EchoService that implements the core logic.
  */
-class EchoServiceRpc constructor(
+class EchoServiceRpc (
     private val echoService: EchoService,
 ) : EchoServiceCoroutineImplBase() {
 
@@ -35,11 +37,13 @@ class EchoServiceRpc constructor(
     }
 }
 
-class EchoServer {
+class EchoServer(
+    private val echoService: EchoService
+) {
     // Server instance configured to run on port 8080 and to handle RPC requests using the
     // EchoServiceRpc class, which delegates the requests to the EchoService implementation
     private val server = ServerBuilder.forPort(8080)
-        .addService(EchoServiceRpc(EchoService()))
+        .addService(EchoServiceRpc(echoService))
         .build()
 
     /**
@@ -55,5 +59,6 @@ class EchoServer {
 }
 
 fun main() {
-    EchoServer().start()
+    val echoService = EchoService(Clock.systemUTC(), EchoLogStore)
+    EchoServer(echoService).start()
 }

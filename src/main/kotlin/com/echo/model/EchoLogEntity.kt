@@ -27,5 +27,11 @@ data class EchoLogEntity(
             message = message,
             createdAt = now,
         )
+
+//        fun fromRecord(record: EchoLogRecord): EchoLogEntity = EchoLogEntity(
+//            id = record.id,
+//            message = record.message,
+//            createdAt = record.createdAt.toInstant(java.time.ZoneOffset.UTC)
+//        )
     }
 }

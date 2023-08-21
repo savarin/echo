@@ -11,7 +11,7 @@ import io.grpc.ManagedChannelBuilder
  *
  * @property rpc The EchoServiceCoroutineStub used to make RPC calls.
  */
-class EchoClient constructor(
+class EchoClient (
     private val rpc: EchoServiceCoroutineStub,
 ) {
     /**

@@ -38,6 +38,17 @@ object EchoLogStore {
         }
     }
 
+//    fun getAllLogs(): List<EchoLogEntity> {
+//        val ctx = connect()
+//        return ctx.transactionResult { configuration ->
+//            val transactionCtx = DSL.using(configuration)
+//            transactionCtx
+//                .selectFrom(ECHO_LOG)
+//                .fetch()
+//                .map { record -> EchoLogEntity.fromRecord(record) } // Adjust this line to correctly convert the record to EchoLogEntity
+//        }
+//    }
+
     fun printLogs() {
         val ctx = connect()
         ctx.select()
