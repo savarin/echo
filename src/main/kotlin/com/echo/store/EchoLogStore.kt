@@ -18,9 +18,9 @@ object EchoLogStore {
         return DSL.using(DriverManager.getConnection(URL), SQLDialect.SQLITE)
     }
 
-    fun migrate() {
+    fun migrate(url: String = URL) {
         val flyway = Flyway.configure()
-            .dataSource(URL, null, null)
+            .dataSource(url, null, null)
             .locations("classpath:db/migration")
             .load()
 
@@ -46,6 +46,20 @@ object EchoLogStore {
             .forEach { record ->
                 println("ID: ${record["id"]}, Message: ${record["message"]}, Created At: ${record["created_at"]}")
             }
+    }
+
+    fun setUp(url: String) {
+        migrate(url)
+    }
+
+    fun tearDown() {
+        val ctx = connect()
+        ctx.transaction { configuration ->
+            val transactionCtx = DSL.using(configuration)
+            transactionCtx
+                .deleteFrom(ECHO_LOG)
+                .execute()
+        }
     }
 }
 
