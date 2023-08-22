@@ -12,6 +12,7 @@ repositories {
 val jooqGeneratorRuntime by configurations.creating
 
 dependencies {
+    implementation("com.sparkjava:spark-core:2.9.4")
     implementation("io.grpc:grpc-core:1.57.2")
     implementation("io.grpc:grpc-kotlin-stub:1.3.0")
     implementation("io.grpc:grpc-netty:1.41.0")
@@ -74,6 +75,11 @@ val generateJooq by tasks.registering(JavaExec::class) {
     classpath = configurations.getByName("jooqGeneratorRuntime")
     args("src/main/resources/jooq-config.xml")
     dependsOn("migrateDb")
+}
+
+val runProxy by tasks.registering(JavaExec::class) {
+    mainClass.set("com.echo.proxy.EchoProxyKt")
+    classpath = mainSourceSet.runtimeClasspath
 }
 
 val runServer by tasks.registering(JavaExec::class) {
